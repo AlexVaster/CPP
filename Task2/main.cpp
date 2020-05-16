@@ -3,7 +3,6 @@
 #include <fstream>
 #include "Divisor.hpp"
 
-
 int main(int argc, const char * argv[]) {
     std::ifstream fin("DIVIDORS.IN");
     std::ofstream fout("DIVIDORS.OUT");
