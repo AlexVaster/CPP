@@ -1,4 +1,4 @@
-//  Ex. 23
+//  Ex. 23 Метрическое время
 #include <iostream>
 #include "Time.hpp"
 #include <fstream>

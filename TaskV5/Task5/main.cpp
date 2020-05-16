@@ -1,4 +1,4 @@
-//Ex. 68
+//Ex. 68 Таймер
 #include <iostream>
 #include <fstream>
 #include "Timer.hpp"
