@@ -4,6 +4,8 @@ Progression::Progression(){
     sizeArr = 0;
     array = nullptr;
     maxArray = nullptr;
+    maxCounter = 0;
+    stepOfProg = 0;
 }
 Progression::Progression(int size, int* arr){
     sizeArr = size;
