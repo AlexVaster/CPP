@@ -1,0 +1,4 @@
+Wish you were here          -> Wish You Were Here
+Hello, world!               -> Hello, World!
+shine on you crazy diamond  -> Shine On You Crazy Diamond
+Привет, мир!                -> Привет, мир!
