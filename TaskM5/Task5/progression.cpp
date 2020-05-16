@@ -40,6 +40,7 @@ void Progression::setArr(int size, int *arr){
     }
     findStep();
 }
+
 std::istream& operator>>(std::istream& in, Progression& prog) {
     in >> prog.sizeArr;
     prog.array = new int[prog.sizeArr];
@@ -49,14 +50,16 @@ std::istream& operator>>(std::istream& in, Progression& prog) {
     prog.findStep();
     return in;
 }
+// Вывод массива с последовательностью максимальной длины
 std::ostream& operator<<(std::ostream& out, const Progression& prog) {
     if (prog.sizeArr == 0) {
         return out << 0;
     }
+    out << "Последовательность: ";
     for (int i = 0; i < prog.sizeArr; i++) {
         out << prog.array[i] << " ";
     }
-    out << std::endl;
+    out << std::endl << "Максимальная длина: " << prog.maxCounter << " из чисел: ";
     for (int i = 0; i < prog.maxCounter; i++) {
         out << prog.maxArray[i] << " ";
     }
@@ -78,19 +81,21 @@ void Progression::findStep(){
         stepOfProg = getArr(1)-getArr(0);
         counter = 2;
         int startIndex = 0;
-        for (int i = 2; i < sizeArr; i++) {
+        int tempIndex = 0;
+        for (int i = 2; i < sizeArr; i++) { 
             if (stepOfProg == getArr(i) - getArr(i - 1)) {
                 counter++;
-                if (maxCounter < counter) maxCounter = counter;
+                if (maxCounter <= counter) maxCounter = counter;
             } else {
                 stepOfProg = getArr(i) - getArr(i - 1);
-                if (maxCounter <= counter) {
-                    maxCounter = counter;
-                    if (sizeArr / 2 > i) {
-                        startIndex = i - 1;
-                    }
-                }
                 counter = 2;
+                tempIndex = i - 1;
+                if (maxCounter <= counter) maxCounter = counter;
+            }
+            if (i == sizeArr - 1) {
+                if ((i - tempIndex) > (tempIndex - startIndex)) {
+                    startIndex = tempIndex;
+                }
             }
         }
         maxArray = new int[maxCounter];
