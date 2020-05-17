@@ -7,17 +7,16 @@ public:
     Quad(int numb, int count);
     
     int getInput() const { return inputNumber; }
-    int getCount() const { return stage; }
+    int getStage() const { return stage; }
     int getResult() const { return resultNumber; }
-    int getQuadArr(int index) const;
     void setInput(int numb);
     void setStage(int numb);
+
     friend std::istream& operator>>(std::istream& in, Quad& quad);
     friend std::ostream& operator<<(std::ostream& out, const Quad& quad);
 private:
     int inputNumber;
     int resultNumber;
-    int* quadArr;
     int stage;
     void sumKvadrat();
 };

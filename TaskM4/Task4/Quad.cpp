@@ -3,19 +3,12 @@
 Quad::Quad() {
     inputNumber = 0;
     stage = 0;
-    quadArr = nullptr;
     resultNumber = 0;
 }
 Quad::Quad(int numb, int count) {
     inputNumber = numb;
     stage = count;
     sumKvadrat();
-}
-int Quad::getQuadArr(int index) const {
-    if ((index < 0)||(index >= stage)) {
-        return 0;
-    }
-    return quadArr[index];
 }
 void Quad::setInput(int numb) {
     if (numb > 0) {
@@ -42,7 +35,6 @@ std::ostream& operator<<(std::ostream& out, const Quad& quad) {
 void Quad::sumKvadrat () {
     int sum;
     int number = inputNumber;
-    quadArr = new int[stage];
     for (int i = 0; i < stage; i++) {
         sum = 0;
         while (number > 0) {
@@ -53,8 +45,7 @@ void Quad::sumKvadrat () {
             }
             number /= 10;
         }
-        quadArr[i] = sum;
         number = sum;
     }
-    resultNumber = quadArr[stage - 1];
+    resultNumber = number;
 }

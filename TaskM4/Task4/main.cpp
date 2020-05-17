@@ -6,13 +6,13 @@
 
 int main(int argc, const char * argv[]) {
     Quad obj1;
-    std::ifstream fin("/Users/alexvaster/Desktop/Nya/Proga/Task_5(17)/Task_5(17)/QUAD.IN");
-    std::ofstream fout("/Users/alexvaster/Desktop/Nya/Proga/Task_5(17)/Task_5(17)/QUAD.OUT");
+    std::ifstream fin("QUAD.IN");
+    std::ofstream fout("QUAD.OUT");
     fin >> obj1;
     fout << obj1;
     fout.close();
     
-    Quad test(5321, 7);
+    Quad test(5, 3);
     std::cout << test << std::endl;
     return 0;
 }
