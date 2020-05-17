@@ -122,14 +122,17 @@ void Time::convert(){
 }
 void Time::check(){
     if (inputStyle == 1) {
-        if ((hour < 0)||(hour > 23)) {
-            hour = 0;
-        }
-        if ((min < 0)||(min > 59)) {
-            min = 0;
-        }
-        if ((sec < 0)||(sec > 59)) {
-            sec = 0;
+        if ((hour == 24) && (min == 0) && (sec == 0)) {
+        } else {
+            if ((hour < 0) || (hour > 23)) {
+                hour = 0;
+            }
+            if ((min < 0) || (min > 59)) {
+                min = 0;
+            }
+            if ((sec < 0) || (sec > 59)) {
+                sec = 0;
+            }
         }
     } else {
         if ((dec_hour < 0)||(dec_hour > 9)) {
