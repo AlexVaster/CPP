@@ -35,6 +35,10 @@ int main() {
 	std::cout << "Result of '~a' " << res << std::endl;
 	std::cout << "Det of a = " << obj1.determinant() << std::endl << std::endl;
 	std::cout << obj2[0][1] << std::endl;
-
+	// subMatrix()
+	Matrix sub(3, 3, list2);
+	std::cout << "SubMatrix of 3x3 " << 
+			     sub << "1 row, 1 column sub" << sub.subMatrix(1, 1) << "2 row, 2 column sub" << 
+			     sub.subMatrix(2, 2) << "0 row, 1 column sub" << sub.subMatrix(0,1);
 	return 0;
 }
