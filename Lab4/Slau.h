@@ -4,7 +4,7 @@
 class Slau : public Matrix {
 public:
 	Slau(int, int);
-	void solve();
+	void solve(int);
 	void kramer();
 	void inverseMatrix();
 	void jordanGauss();

@@ -25,8 +25,11 @@ int main () {
     obj1.setInputStyle(2);
     std::cout << "Normal: " << obj1;
     // method check()
-    Time obj2(1, 25, 10, 67);
+    Time obj2(1, 24, 0, 0);
     obj2.setInputStyle(2);
-    std::cout << "Wrong hour: " << obj2;
+    std::cout << obj2;
+    // wrong numbers into 0
+    Time wrong(1, 45, 231, 325);
+    std::cout << "Wrong numbers: " << wrong;
     return 0;
 }
