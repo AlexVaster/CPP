@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "Matrix.h"
+#include "Slau.h"
 
 int main() {
 	/*Matrix test1;
@@ -8,6 +9,7 @@ int main() {
 	std::cout << test1 << std::endl;*/
 	Matrix test2;
 	std::ifstream fin("input.txt");
+	std::ifstream inMatrix("Matrix.txt");
 	std::ofstream fout("output.txt");
 	fin >> test2;
 	fout << test2;
@@ -40,5 +42,9 @@ int main() {
 	std::cout << "SubMatrix of 3x3 " << 
 			     sub << "1 row, 1 column sub" << sub.subMatrix(1, 1) << "2 row, 2 column sub" << 
 			     sub.subMatrix(2, 2) << "0 row, 1 column sub" << sub.subMatrix(0,1);
+	// SLAU
+	Slau example(3, 3);
+	inMatrix >> example;
+	std::cout << example;
 	return 0;
 }

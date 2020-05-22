@@ -10,7 +10,7 @@ Matrix::Matrix(int input_row, int input_column) {
 	row = input_row;
 	column = input_column;
 	elements = new double* [input_row];
-	for (int i = 0; i < input_row; i++)	
+	for (int i = 0; i < input_row; i++)
 		elements[i] = new double[input_column];
 	for (int i = 0; i < input_row; i++)
 		for (int j = 0; j < input_column; j++)
@@ -51,10 +51,24 @@ Matrix::~Matrix() {
 		delete[] elements;
 	}
 }
-void Matrix::setValueAt(double val, unsigned int r, unsigned int c) {
+void Matrix::setValueAt(double val, int r, int c) {
 	if ((r < row)&&(c < column)) elements[r][c] = val;
 }
-
+void Matrix::swapRow(Matrix& obj, int first, int second) {
+	double* temp = new double[column];
+	for (int i = 0; i < column; i++) {
+		temp[i] = 0;
+	}
+	for (int i = 0; i < obj.column; i++) {
+		temp[i] = obj.at(first, i);
+	}
+	for (int i = 0; i < obj.column; i++) {
+		obj.at(first, i) = obj.at(second, i);
+	}
+	for (int i = 0; i < obj.column; i++) {
+		obj.at(second, i) = temp[i];
+	}
+}
 void Matrix::inputMatrix() {
 	int r, c = 0;
 	std::cout << "Rows: ";
@@ -82,7 +96,7 @@ Matrix Matrix::operator+(const Matrix& obj) {
 	if ((row != obj.row) || (column != obj.column)) return *this;
 	Matrix temp(*this);
 	for (int i = 0; i < row; i++)
-		for (int j = 0; j < column; j++) 
+		for (int j = 0; j < column; j++)
 			temp.elements[i][j] += obj.elements[i][j];
 	return temp;
 }
@@ -136,7 +150,7 @@ Matrix& Matrix::operator=(const Matrix& obj) {
 			elements[i][j] = obj.elements[i][j];
 	return *this;
 }
-double& Matrix::at(const unsigned int r, const unsigned int c) {
+double& Matrix::at(const int r, const int c) {
 	if ((r < row) && (c < column)) {
 		return elements[r][c];
 	} else {
@@ -152,13 +166,13 @@ Matrix Matrix::operator!() {
 }
 Matrix Matrix::subMatrix(int sub_row, int sub_col) {
 	Matrix temp(row - 1, column - 1);
-	for (int i = 0; i < sub_row; i++) {
+	for (unsigned i = 0; i < sub_row; i++) {
 		for (int j = 0; j < sub_col; j++)
 			temp.elements[i][j] = elements[i][j];
 		for (int j = sub_col + 1; j < column; j++)
 			temp.elements[i][j - 1] = elements[i][j];
 	}
-	for (int i = sub_row + 1; i < column; i++) {
+	for (unsigned i = sub_row + 1; i < column; i++) {
 		for (int j = 0; j < sub_col; j++)
 			temp.elements[i - 1][j] = elements[i][j];
 		for (int j = sub_col + 1; j < column; j++)

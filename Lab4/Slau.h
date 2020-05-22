@@ -3,14 +3,15 @@
 
 class Slau : public Matrix {
 public:
+	Slau();
 	Slau(int, int);
-	void solve(int);
+	void changeMethod(int);
 	void kramer();
 	void inverseMatrix();
 	void jordanGauss();
 
-	friend std::ostream& operator << (std::ostream&, Slau&);
 	friend std::istream& operator >> (std::istream&, Slau&);
+	friend std::ostream& operator << (std::ostream&, const Slau&);
 private:
 	int row;      // Количество уравнений 
 	int column;	  // Количество переменных
@@ -20,4 +21,7 @@ private:
 	bool isSolved;// Признак совместимости
 	int* reoder;  // Перестановка переменных, полученная в методе Жордана-Гаусса
 	int rang;     // Ранг матрицы коэффициентов
+	int method;   // Метод решения СЛАУ 
+
+	void solve(int numb = 1);
 };
