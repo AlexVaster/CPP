@@ -34,7 +34,6 @@ Matrix::Matrix(const Matrix& obj) {
 	column = obj.column;
 	if (obj.elements == nullptr) {
 		elements = nullptr;
-		
 	} else {
 		elements = new double* [row];
 		for (int i = 0; i < row; i++)
@@ -52,7 +51,8 @@ Matrix::~Matrix() {
 	}
 }
 void Matrix::setValueAt(double val, int r, int c) {
-	if ((r < row)&&(c < column)) elements[r][c] = val;
+	if ((r < row)&&(c < column)&&(r > -1)&&(c > -1)) 
+		elements[r][c] = val;
 }
 void Matrix::swapRow(Matrix& obj, int first, int second) {
 	double* temp = new double[column];
@@ -60,30 +60,14 @@ void Matrix::swapRow(Matrix& obj, int first, int second) {
 		temp[i] = 0;
 	}
 	for (int i = 0; i < obj.column; i++) {
-		temp[i] = obj.at(first, i);
+		temp[i] = obj[first][i];
 	}
 	for (int i = 0; i < obj.column; i++) {
-		obj.at(first, i) = obj.at(second, i);
+		obj[first][i] = obj[second][i];
 	}
 	for (int i = 0; i < obj.column; i++) {
-		obj.at(second, i) = temp[i];
+		obj[second][i] = temp[i];
 	}
-}
-void Matrix::inputMatrix() {
-	int r, c = 0;
-	std::cout << "Rows: ";
-	std::cin >> r;
-	std::cout << "Columns: ";
-	std::cin >> c;
-	Matrix temp(r, c);
-	if ((temp.row != 0) || (temp.column != 0)) {
-		for (int i = 0; i < temp.row; i++)
-			for (int j = 0; j < temp.column; j++) {
-				std::cout << "[" << i << "] " << "[" << j << "]: ";
-				std::cin >> temp.elements[i][j];
-			}
-	}
-	*this = temp;
 }
 Matrix operator-(const Matrix& obj) {
 	for (int i = 0; i < obj.row; i++)
@@ -115,7 +99,7 @@ Matrix Matrix::operator * (double b) {
 			temp.elements[i][j] = elements[i][j] * b;
 	return temp;
 }
-Matrix Matrix::operator * (Matrix& obj) {
+Matrix Matrix::operator * (const Matrix& obj) {
 	if (column == obj.row) {
 		Matrix temp(row, obj.column);
 		for (int i = 0; i < row; i++)
@@ -124,8 +108,15 @@ Matrix Matrix::operator * (Matrix& obj) {
 					temp.elements[i][j] += (elements[i][k] * obj.elements[k][j]);
 		return temp;
 	} else {
-		throw "Matrix of such sizes cannot be multiplied";
+		Matrix zero;
+		return zero;
 	}
+}
+Matrix Matrix::operator / (const Matrix& obj) {
+	Matrix a = *this;
+	Matrix b = obj;
+	Matrix temp = a * !b;
+	return temp;
 }
 Matrix operator*(double b, const Matrix& obj) {
 	Matrix temp(obj.row, obj.column);
@@ -133,6 +124,17 @@ Matrix operator*(double b, const Matrix& obj) {
 		for (int j = 0; j < obj.column; j++)
 			temp.elements[i][j] = obj.elements[i][j] * b;
 	return temp;
+}
+bool Matrix::operator==(const Matrix& obj) {
+	if ((this->row != obj.row)||(this->column != obj.column)) return false;
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < column; j++)
+			if (elements[i][j] != obj.elements[i][j]) return false;
+	return true;
+}
+bool Matrix::operator!=(const Matrix& obj) {
+	Matrix temp = *this;
+	return !(temp==obj);
 }
 Matrix& Matrix::operator=(const Matrix& obj) {
 	if ((row != obj.row) || (column != obj.column)) {
@@ -150,12 +152,10 @@ Matrix& Matrix::operator=(const Matrix& obj) {
 			elements[i][j] = obj.elements[i][j];
 	return *this;
 }
-double& Matrix::at(const int r, const int c) {
-	if ((r < row) && (c < column)) {
+double Matrix::at(int r, int c) {
+	if ((r < row) && (c < column) && (r > -1) && (c > -1)) 
 		return elements[r][c];
-	} else {
-		throw std::logic_error("out of bounds");
-	}
+	return 0;
 }
 Matrix Matrix::operator!() {
 	Matrix temp(column, row);
@@ -223,15 +223,12 @@ std::istream& operator>>(std::istream& in, Matrix& obj) {
 }
 std::ostream& operator<<(std::ostream& out, const Matrix& obj) {
 	if (obj.elements != nullptr) {
-		out << "Matrix:" << std::endl;
-		for (int i = 0; i < obj.row; i++)
-		{
+		out << "Matrix:\n";
+		for (int i = 0; i < obj.row; i++) {
 			for (int j = 0; j < obj.column; j++)
 				out << std::setw(7) << obj.elements[i][j];
-			out << std::endl;
+			out << "\n";
 		}
-	} else {
-		out << "Matrix is empty" << std::endl;
-	}
+	} else 	out << "Matrix is empty\n";
 	return out;
 }

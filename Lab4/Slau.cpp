@@ -14,8 +14,8 @@ Slau::Slau() {
 }
 Slau::Slau(int input_row, int input_column) {
 	Matrix a(input_row, input_column);
-	Matrix b(input_row, input_column);
-	Matrix x(input_row, input_column);
+	Matrix b(input_row, 0);
+	Matrix x(input_row, 0);
 	row = input_row;
 	column = input_column;
 	reoder = new int[column];
@@ -27,13 +27,16 @@ Slau::Slau(int input_row, int input_column) {
 	if (input_row != input_column) method = 3;
 }
 void Slau::changeMethod(int numb) {
-	method = numb;
+	if (row != column)
+		method = 3;
+	else if ((numb > 0)&&(numb < 4))
+		method = numb;
 	solve();
 }
 void Slau::kramer() {
-	if (row != column) throw "NonSquareMatrix";
+	if (row != column) return; 
 	double det = a.determinant();
-	if (det == 0) throw "Zero determinant";
+	if (det == 0) return;
 	rang = row;
 	Matrix temp = a;
 	Matrix result(1, column);
@@ -44,11 +47,11 @@ void Slau::kramer() {
 		for (int i = 0; i < column; i++)
 			temp[i][j] = a[i][j];
 	}
-	isSolved = true;
 	this->x = !result;
+	isSolved = true;
 }
 void Slau::inverseMatrix() {
-	if (row != column);
+	if (row != column) return;
 	Matrix inverse = ~a;
 	Matrix bTemp = !b;
 	Matrix x(1, column);
@@ -124,29 +127,27 @@ void Slau::jordanGauss() {
 	this->x = res;
 	isSolved = true;
 }
-void Slau::solve(int numb) {
-	if (numb == 1) kramer();
-	else if (numb == 2) inverseMatrix();
+void Slau::solve() {
+	if (method == 1) kramer();
+	else if (method == 2) inverseMatrix();
 	else jordanGauss();
 }
 std::istream& operator >> (std::istream& in, Slau& obj) {
 	in >> obj.a;
 	in >> obj.b;
-	obj.solve(3);
+	obj.method = 3;
+	obj.solve();
 	return in;
 }
 std::ostream& operator << (std::ostream& out, const Slau& obj) {
-	out << "Matrix: " << std::endl;
+	out << "Matrix: \n";
 	for (int i = 0; i < obj.row; i++) {
 		for (int j = 0; j < obj.column; j++)
 			out << std::setw(7) << obj.a[i][j];
-		out << std::setw(4) << "|" << std::setw(4) << obj.b[i][0] << std::endl;
+		out << std::setw(4) << "|" << std::setw(4) << obj.b[i][0] << "\n";
 	}
-	out << "Result of SLAU: " << std::endl;
-	if (!obj.isSolved) {
-		out << "System incomplete " << std::endl;
-		return out;
-	}
+	out << "Result of SLAU: \n";
+	if (!obj.isSolved) return out << "System incomplete \n";
 	if (obj.rang < obj.column) {
 		for (int i = 0; i < obj.rang; i++) {
 			out << "x" << (obj.reoder[i] + 1) << " = " << obj.x[i][0];
@@ -159,13 +160,13 @@ std::ostream& operator << (std::ostream& out, const Slau& obj) {
 					out << obj.x[i][j] << "*x" 
 						<< (obj.reoder[obj.rang + j - 1] + 1);
 				}
-				out << std::endl;
 			}
+			out << "\n";
 		}
 	} else {
 		out << "{";
 		for (int i = 0; i < obj.column - 1; i++)
 			out << obj.x[i][0] << ", "; 
-		out << obj.x[obj.column - 1][0] << "}" << std::endl;
+		out << obj.x[obj.column - 1][0] << "}\n";
 	}
 }

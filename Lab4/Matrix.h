@@ -8,40 +8,41 @@ public:
 	Matrix(int, int, int*);
 	Matrix(const Matrix& object);
 	~Matrix();
-
-	class TwoBracket {
+	// Operator [][]
+	class TwoBracketOperator {
 	public:
-		TwoBracket(double* arr) : arr(arr) { }
+		TwoBracketOperator(double* arr) : arr(arr) { }
 		double& operator[](int index) const { return arr[index]; }
-	private:
+	private: 
 		double* arr;
 	};
-	TwoBracket operator[](int index) const { return TwoBracket(elements[index]); }
-	
+	TwoBracketOperator operator[](int index) const { return TwoBracketOperator(elements[index]); }
+	// Methods
 	inline int getCountRow() const { return row; }
 	inline int getCountCol() const { return column; }
 	void setValueAt(double, int, int);
 	void swapRow(Matrix&, int, int);
-
-	void inputMatrix();
+	Matrix& operator=(const Matrix&);
+	double at(int, int);
+	Matrix operator!(); // Transpose matrix
+	Matrix subMatrix(int, int);
+	double determinant();
+	Matrix operator~(); // Inverse Matrix
+	// Arithmetic
 	friend Matrix operator-(const Matrix&);
 	Matrix operator+(const Matrix&);
 	Matrix operator-(const Matrix&);
-	Matrix operator*(Matrix&);
+	Matrix operator*(const Matrix&);
 	Matrix operator*(double);
 	friend Matrix operator*(double, const Matrix&);
-	Matrix& operator=(const Matrix&);
-	double& at(const int, const int);
-	
-	Matrix operator!();
-	Matrix subMatrix(int, int);
-	double determinant();
-	Matrix operator~();
-	
+	Matrix operator/(const Matrix&);
+	// Logic
+	bool operator==(const Matrix&);
+	bool operator!=(const Matrix&);
+	// I/O
 	friend std::istream& operator>>(std::istream&, Matrix&);
 	friend std::ostream& operator<<(std::ostream&, const Matrix&);
 private:
-	friend class TwoBracket;
 	int row, column;
 	double** elements;
 };
