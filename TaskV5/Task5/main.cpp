@@ -1,13 +1,13 @@
 //Ex. 68 Таймер
 #include <iostream>
 #include <fstream>
-#include "Timer.hpp"
-
+#include "date.h"
 int main(int argc, const char * argv[]) {
-    Timer obj1;
-    std::fstream fin("input.txt");
-    std::ofstream fout("output.txt");
-    fin >> obj1;
-    fout << obj1;
+    std::ifstream fin("input.txt");
+    DateTime test;
+    fin >> test;
+    std::cout << test;
+    test.setTimer(1, 0, 1);
+    std::cout << test;
     return 0;
 }
