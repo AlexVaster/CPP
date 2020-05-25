@@ -7,7 +7,7 @@ public:
     DateTime(DateTime&);
     DateTime(int, int, int, int, int, int);
     
-    void setTimer(int, int, int);
+    DateTime& setTimer(int, int, int);
     void today();
     std::string toString(std::string format = "dd.MM.yyyy hh:mm:ss") const;
     bool isValid();
@@ -21,6 +21,4 @@ public:
     friend std::ostream& operator<<(std::ostream&, const DateTime&);
 private:
     int second, minute, hour, day, month, year;
-    int timerSec, timerMin, timerHour, timerDay, timerMonth, timerYear;
-    void calculate();
 };

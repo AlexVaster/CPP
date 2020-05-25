@@ -4,12 +4,6 @@
 
 DateTime::DateTime() {
     today();
-    timerSec = 0;
-    timerMin = 0;
-    timerHour = 0;
-    timerDay = 0;
-    timerMonth = 0;
-    timerYear = 0;
 }
 DateTime::DateTime(DateTime& date) {
     second = date.second;
@@ -18,38 +12,49 @@ DateTime::DateTime(DateTime& date) {
     day = date.day;
     month = date.month;
     year = date.year;
-    timerSec = 0;
-    timerMin = 0;
-    timerHour = 0;
-    timerDay = 0;
-    timerMonth = 0;
-    timerYear = 0;
 }
 DateTime::DateTime(int dd, int MM, int yyyy, int hh, int mm, int ss) {
-    DateTime::day = dd;
-    DateTime::month = MM;
-    DateTime::year = yyyy;
-    DateTime::hour = hh;
-    DateTime::minute = mm;
-    DateTime::second = ss;
-    timerSec = 0;
-    timerMin = 0;
-    timerHour = 0;
-    timerDay = 0;
-    timerMonth = 0;
-    timerYear = 0;
-    if (!isValid()) {
-        today();
-    }
+    day = dd;
+    month = MM;
+    year = yyyy;
+    hour = hh;
+    minute = mm;
+    second = ss;
+    if (!isValid()) today();
 }
-void DateTime::setTimer(int h, int m, int s) {
+DateTime& DateTime::setTimer(int h, int m, int s) {
+    int timerHour, timerMin, timerSec;
     if (h > 0) timerHour = h;
     else timerHour = 0;
     if (m > 0) timerMin = m;
     else timerMin = 0;
     if (s > 0) timerSec = s;
     else timerSec = 0;
-    calculate();
+    
+    int temp = 0;
+    long allSeconds = (day * 86400) + ((timerHour + hour) * 3600)
+        + ((timerMin + minute) * 60) + timerSec + second;
+    if ((allSeconds / 86400) > day) {
+        day = allSeconds / 86400;
+        if (day > 30) {
+            temp = day / 30;
+            month = month + temp;
+            day -= 30 * temp;
+            if (month > 12) {
+                temp = year / 12;
+                year = year + temp;
+                month -= 12 * temp;
+            }
+        }
+    }
+    allSeconds %= 86400;
+    hour = allSeconds / 3600;
+    allSeconds %= 3600;
+    minute = allSeconds / 60;
+    allSeconds %= 60;
+    second = allSeconds;
+    DateTime result(day, month, year, hour, minute, second);
+    return result;
 }
 void DateTime::today() {
     struct tm localtm;
@@ -174,79 +179,12 @@ DateTime DateTime::fromString(std::string s) {
 }
 std::istream& operator>>(std::istream& in, DateTime& timer) {
     char delim;
-    int hh = -1;
-    int mm = -1;
-    int ss = -1;
-    in >> hh >> delim >> mm >> delim >> ss;
-    if ((mm == -1) && (ss == -1)) {
-        if (hh > 0) timer.timerSec = hh;
-        else timer.timerSec = 0;
-    }
-    else if (ss == -1) {
-        if (hh > 0) timer.timerMin = hh;
-        else timer.timerMin = 0;
-        if (mm > 0) timer.timerSec = mm;
-        else timer.timerSec = 0;
-    }
-    else {
-        if (hh > 0) timer.timerHour = hh;
-        else timer.timerHour = 0;
-        if (mm > 0) timer.timerMin = mm;
-        else timer.timerMin = 0;
-        if (ss > 0) timer.timerSec = ss;
-        else timer.timerSec = 0;
-    }
-    timer.calculate();
+    in >> timer.hour >> delim >> timer.minute >> delim >> timer.second 
+       >> timer.day >> delim >> timer.month >> delim >> timer.year;
+    if (!timer.isValid()) timer.today();
     return in;
 }
 std::ostream& operator<<(std::ostream& out, const DateTime& timer) {
-    if (timer.timerHour < 10) out << "0" << timer.timerHour << ":";
-    else out << timer.timerHour << ":";
-    if (timer.timerMin < 10) out << "0" << timer.timerMin << ":";
-    else out << timer.timerMin << ":";
-    if (timer.timerSec < 10) out << "0" << timer.timerSec;
-    else out << timer.timerSec;
-    out << "   ";
-    if (timer.timerDay < 10) out << "0" << timer.timerDay << ".";
-    else out << timer.timerDay << ".";
-    if (timer.timerMonth < 10) out << "0" << timer.timerMonth << ".";
-    else out << timer.timerMonth << ".";
-    out << timer.timerYear << "\n";
+    out << timer.date() << " " << timer.time() << "\n";
     return out;
-}
-void DateTime::calculate() {
-    int temp = 0;
-    long allSeconds = (day * 86400) + ((timerHour + hour) * 3600) 
-        + ((timerMin + minute) * 60) + timerSec + second;
-    if ((allSeconds / 86400) > day) {
-        timerDay = allSeconds / 86400;
-        if (timerDay > 30) {
-            temp = timerDay / 30;
-            timerMonth = month + temp;
-            timerDay -= 30 * temp;
-            if (timerMonth > 12) {
-                temp = timerYear / 12;
-                timerYear = year + temp;
-                timerMonth -= 12 * temp;
-            }
-            else {
-                timerYear = year;
-            }
-        }
-        else {
-            timerMonth = month;
-            timerYear = year;
-        }
-    }
-    else {
-        timerDay = day;
-        timerMonth = month;
-        timerYear = year;
-    }
-    allSeconds %= 86400;
-    timerHour = allSeconds / 3600;
-    allSeconds %= 3600;
-    timerMin = allSeconds / 60;
-    allSeconds %= 60;
-    timerSec = allSeconds;
-}
+}   
