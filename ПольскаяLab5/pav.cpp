@@ -1,99 +1,118 @@
 #include <iostream>
 using namespace std;
 
-class Elem {
+class Operations {
 public:
-	double inf;
-	Elem* next;
-	Elem() {
+	char inf;
+	Operations* next;
+	Operations() {
 		inf = NULL;
 		next = NULL;
 	}
-	Elem(double i) {
-		inf = i;
+	Operations(char operation) {
+		inf = operation;
 		next = NULL;
 	}
 };
 class PAV {
 private:
-	Elem* head;
-	double pop() {
-		if (head != NULL) {
-			Elem* temp = head;
-			double k;
-			head = temp->next;
-			k = temp->inf;
+	char* result;
+	int size = 0;
+	Operations* h; 
+
+	char popOperation() {
+		if (h != NULL) {
+			Operations* temp = h;
+			char symbol = temp->inf;
+			h = temp->next;
 			delete temp;
-			return k;
+			return symbol;
 		}
 	}
-	void push(char i) {
-		if (i == 44);				// Пропуск символа ','
-		else {
-			if (i == 43) {			//	+
-				double b = pop();
-				double a = pop();
-				a += b;
-				Elem* elem = new Elem(a);
-				elem->next = head;
-				head = elem;
-			}
-			else if (i == 45) {   //	-
-				double b = pop();
-				double a = pop();
-				a -= b;
-				Elem* elem = new Elem(a);
-				elem->next = head;
-				head = elem;
-			}
-			else if (i == 42) {   //	*
-				double b = pop();
-				double a = pop();
-				a *= b;
-				Elem* elem = new Elem(a);
-				elem->next = head;
-				head = elem;
-			}
-			else if (i == 47) {   //	/
-				double b = pop();
-				double a = pop();
-				a /= b;
-				Elem* elem = new Elem(a);
-				elem->next = head;
-				head = elem;
-			} else {
-				Elem* elem = new Elem(i - 48);
-				elem->next = head;
-				head = elem;
-			}
+	void pushChar(char symbol) {
+		char* temp = new char[size + 1];
+		for (int i = 0; i < size; i++) {
+			temp[i] = result[i];
 		}
+		temp[size] = symbol;
+		size += 1;
+		result = temp;
+	}
+	void pushOperation(char symbol) {
+		Operations* temp = new Operations(symbol);
+		temp->next = h;
+		h = temp;
+	}
+	void postfix(char* s) {
+		if (!s) exit(777);
+		int len = strlen(s);		
+		for (int i = 0; i < len; i++) {
+			if (s[i] >= 'a' && s[i] <= 'z') {
+				pushChar(s[i]);
+			}
+			else if ((s[i] == '+')||(s[i] == '-') || (s[i] == '*') || (s[i] == '/') || (s[i] == '(') || (s[i] == ')')) {
+				enterOperators(s[i]);
+			} 
+		}
+		while (!operationsIsEmpty()) {
+			pushChar(popOperation());
+		}
+	}
+	void enterOperators(char operationB) {
+		if (operationsIsEmpty()) pushOperation(operationB);
+		else if(operationB == '(') {
+			pushOperation(operationB);
+		}
+		else if (operationB == ')') {
+			char top = popOperation();
+			while (top != '(') {
+				pushChar(top);
+				top = popOperation();
+			}
+		} else {
+			while ((!operationsIsEmpty()) && (calculateOperator(h->inf) >= calculateOperator(operationB))) {
+				pushChar(popOperation());
+			}
+			pushOperation(operationB);
+		}
+	}
+	bool operationsIsEmpty() {
+		return h == NULL;
+	}
+	int calculateOperator(char operation) {
+		if ((operation == '+') || (operation == '-')) { 
+			return 2;
+		} else if ((operation == '*') || (operation == '/')) { 
+			return 3;
+		} else if (operation == '(') {
+			return 1;
+		} 
+		return -1;
 	}
 public:
 	PAV(char* s) {
-		head = NULL;
+		h = NULL;
 		int len = strlen(s);
-		for (int i = 0; i < len; i++) {
-			push(s[i]);
-		}
+		postfix(s);
 	}
 	void print() {
-		Elem* temp = head;
-		while (temp != NULL) {
-			cout << temp->inf << " ";
-			temp = temp->next;
+		cout << "Postfix: ";
+		for (int i = 0; i < size; i++) {
+			cout << result[i] << "";
 		}
 		cout << endl;
 	}
 };
-// Возможные варианты ввода:
-// 1,2,3,5,-,*,4,6,+,/,+,1,2,*,/,3,/
-// 1235-*46+/+12*/3/
+// примеры ввода:
+// (a+b)*(c+d)                           
+// ((a+b*(c-e)/(d+f))/(a*b))/c
+// a+(b-c)*d
 
 int main() {
-	char* stroka = new char[128];
-	cout << "Enter PAV" << endl;
-	cin >> stroka;
-	PAV str1(stroka);
+	char* s = new char[128];
+	cout << "Enter infix: " << endl;
+	cin >> s;
+	PAV str1(s);
 	str1.print();
 	return 0;
 }
