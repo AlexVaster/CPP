@@ -43,7 +43,7 @@ private:
 		temp->next = h;
 		h = temp;
 	}
-	void postfix(char* s) {
+	void postfix(const char* s) {
 		if (!s) exit(777);
 		int len = strlen(s);		
 		for (int i = 0; i < len; i++) {
@@ -90,7 +90,7 @@ private:
 		return -1;
 	}
 public:
-	PAV(char* s) {
+	PAV(const char* s) {
 		h = NULL;
 		int len = strlen(s);
 		postfix(s);
@@ -103,15 +103,9 @@ public:
 		cout << endl;
 	}
 };
-// примеры ввода:
-// (a+b)*(c+d)                           
-// ((a+b*(c-e)/(d+f))/(a*b))/c
-// a+(b-c)*d
 
 int main() {
-	char* s = new char[128];
-	cout << "Enter infix: " << endl;
-	cin >> s;
+	const char* s = "((a+b*(c-e)/(d+f))/(a*b))/c"; // INPUT
 	PAV str1(s);
 	str1.print();
 	return 0;
